@@ -12,53 +12,76 @@ def auto_typer(text, delay=0.05):
 def main():
     cpp_code = '''
 #include <iostream>
-#include <climits>
-
+#include <vector>
 using namespace std;
 
-int divide(int dividend, int divisor) {
-    if (dividend == INT_MIN && divisor == -1) {
-        return INT_MAX;
+class HashTable {
+private:
+    vector<int> table;
+    int size;
+    int currentSize;
+
+public:
+    HashTable(int tableSize) : size(tableSize), currentSize(0) {
+        table.resize(size, -1);
     }
 
-    long long a = abs((long long)dividend);
-    long long b = abs((long long)divisor);
-    long long result = 0;
+    bool isFull() {
+        return currentSize == size;
+    }
 
-    while (a >= b) {
-        long long temp = b, multiple = 1;
-        
-        while (a >= (temp << 1)) {
-            temp <<= 1;
-            multiple <<= 1;
+    void insert(int key) {
+        if (isFull()) {
+            return;
         }
 
-        a -= temp;
-        result += multiple;
+        int hash = key % size;
+        int index = hash;
+        int i = 1;
+
+        while (table[index] != -1) {
+            index = (hash + i * i) % size;
+            i++;
+
+            if (i > 2 * size) {
+                return; // Avoid infinite loop
+            }
+        }
+
+        table[index] = key;
+        currentSize++;
     }
 
-    if ((dividend < 0) != (divisor < 0)) {
-        result = -result;
+    void printTable() {
+        for (int i = 0; i < size; i++) {
+            if (table[i] != -1) {
+                cout << table[i] << " ";
+            }
+        }
+        cout << endl;
     }
-
-    if (result < INT_MIN) {
-        return INT_MIN;
-    }
-    if (result > INT_MAX) {
-        return INT_MAX;
-    }
-
-    return result;
-}
+};
 
 int main() {
-    int dividend, divisor;
-    cin >> dividend >> divisor;
-    cout << divide(dividend, divisor) << endl;
+    int n, tableSize;
+    cin >> n;
+
+    vector<int> arr(n);
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];
+    }
+
+    cin >> tableSize;
+
+    HashTable ht(tableSize);
+    for (int num : arr) {
+        ht.insert(num);
+    }
+
+    ht.printTable();
+
     return 0;
 }
-
-
     '''
 
     delay = 0.1 

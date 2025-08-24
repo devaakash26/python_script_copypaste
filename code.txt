@@ -1,0 +1,28 @@
+#include <iostream>
+#include <string>
+
+std::string replaceCharacters(const std::string& input) {
+    std::string result;
+    result.reserve(input.size()); // Pre-allocate memory for efficiency
+    
+    for (char c : input) {
+        switch (c) {
+            case 'A': result += 'B'; break;
+            case 'a': result += '@'; break;
+            case '1': result += '2'; break;
+            default: result += c;
+        }
+    }
+    
+    return result;
+}
+
+int main() {
+    std::string input;
+    std::getline(std::cin, input);
+    
+    std::string output = replaceCharacters(input);
+    std::cout << output << std::endl;
+    
+    return 0;
+}
